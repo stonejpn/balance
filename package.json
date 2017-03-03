@@ -1,0 +1,35 @@
+{
+  "name": "balance",
+  "version": "0.1.0",
+  "description": "Balance puzzle solver",
+  "main": "lib/balance.js",
+  "scripts": {
+    "test": "mocha --uid bdd \"spec/**/*-spec.js\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://stonejpn@github.com/stonejpn/balance.git"
+  },
+  "author": "Satoshi Tonegawga",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/stonejpn/balance/issues"
+  },
+  "homepage": "https://github.com/stonejpn/balance#readme",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "logic-solver": "^2.0.1",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.16.1",
+    "eslint-config-airbnb": "^14.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.2 || ^4.0.",
+    "eslint-plugin-react": "^6.9.0",
+    "mocha": "^3.2.0",
+    "sinon": "^1.17.7",
+    "sinon-chai": "^2.8.0"
+  }
+}
