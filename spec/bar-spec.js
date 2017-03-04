@@ -22,24 +22,24 @@ describe("Bar", () =>{
         });
 
         it("leftHand 固定値", () => {
-            bar.addLoad("L1", dist, weight);
+            bar.addLoad("L1", dist, weight, true, 5);
             expect(bar.leftHand).to.have.lengthOf(1);
             expect(bar.fixed).to.be.true;
             expect(bar.isCascading()).to.be.false;
         });
         it("leftHand 未定値", () => {
-            bar.addLoad("L2", dist, "x");
+            bar.addLoad("L2", dist, "x", true, 5);
             expect(bar.fixed).to.be.false;
             expect(bar.isCascading()).to.be.false;
         });
         it("leftHand 多段", () => {
-            bar.addLoad("L3", dist, "Bar3");
+            bar.addLoad("L3", dist, "Bar3", true, 5);
             expect(bar.fixed).to.be.false;
             expect(bar.isCascading()).to.be.true;
         });
 
         it("rightHand", () => {
-            bar.addLoad("R1", dist, weight, false);
+            bar.addLoad("R1", dist, weight, false, 5);
             expect(bar.rightHand).to.have.lengthOf(1);
         });
     });
