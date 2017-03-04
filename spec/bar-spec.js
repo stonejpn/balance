@@ -9,10 +9,10 @@ describe("Bar", () =>{
         expect(bar.fixed).to.be.true;
         expect(bar.leftHand).to.be.eql([]);
         expect(bar.rightHand).to.be.eql([]);
-        expect(bar.depends).to.be.eql([]);
     });
 
     describe("addLoad", () => {
+        /** @param {Bar} bar */
         let [bar, dist, weight] = [];
 
         beforeEach(() => {
@@ -22,25 +22,25 @@ describe("Bar", () =>{
         });
 
         it("leftHand 固定値", () => {
-            bar.addLoad({dist, weight});
-            expect(bar.leftHand).to.be.eql([{name: "L1", dist, weight, bar: null}]);
+            bar.addLoad("L1", dist, weight);
+            expect(bar.leftHand).to.have.lengthOf(1);
             expect(bar.fixed).to.be.true;
+            expect(bar.isCascading()).to.be.false;
         });
         it("leftHand 未定値", () => {
-            weight = "x";
-            bar.addLoad({dist, weight});
-            expect(bar.leftHand).to.be.eql([{name: "L1", dist, weight: null, bar: null}]);
+            bar.addLoad("L2", dist, "x");
             expect(bar.fixed).to.be.false;
+            expect(bar.isCascading()).to.be.false;
         });
         it("leftHand 多段", () => {
-            bar.addLoad({dist, weight: "bar#1"});
-            expect(bar.leftHand).to.be.eql([{name: "L1", dist, weight: null, bar: "bar#1"}]);
-            expect(bar.depends).to.be.eql(["bar#1"]);
+            bar.addLoad("L3", dist, "Bar3");
             expect(bar.fixed).to.be.false;
+            expect(bar.isCascading()).to.be.true;
         });
+
         it("rightHand", () => {
-            bar.addLoad({dist, weight}, false);
-            expect(bar.rightHand).to.be.eql([{name: "R1", dist, weight, bar: null}]);
+            bar.addLoad("R1", dist, weight, false);
+            expect(bar.rightHand).to.have.lengthOf(1);
         });
     });
 
