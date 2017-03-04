@@ -2,6 +2,56 @@
 
 ## 使い方
 
+### 準備
+
+```bash
+$ cd path/to/balance
+$ npm intall
+```
+
+### 使い方
+
+```bash
+$ ./balance-cli.js -h
+
+  Usage: balance-cli max_value [puzzle]
+
+  Options:
+
+    -h, --help     output usage information
+    -V, --version  output the version number
+
+Puzzle example:
+  Bar1:2,x|3,x
+  Bar2:1,Bar1|3,x
+```
+
+puzzleの指定がなかったら、標準入力から。
+どうしても問題が複数行にまたがるので、何かテキストファイルを用意して、リダイレクトするほうが楽です。
+
+### 問題の記述
+
+http://www.geocities.co.jp/Berkeley-Labo/6317/mobile.htm より
+
+![問題1](http://www.geocities.co.jp/Berkeley-Labo/6317/mobile_q1.gif)
+
+この場合、左から書いた場合、
+```
+Bar1:2,x|3,x
+Bar2:1,Bar1|3,x
+Bar3:4,x/2,x/1,x|2,x
+Bar4:4,x|1,x
+Bar5:2,Bar3|3,Bar4
+Bar6:5,Bar2|4,Bar5
+```
+
+横棒１本につき１行で記述し、
+```
+Label:Dist.Weight/Dist,Weight....|Dist.Weight....
+```
+と記述します。
+詳細は下記の「[記述ルール](#記述ルール)」をどうぞ。
+
 ----
 
 ## 作る前に考えたこと

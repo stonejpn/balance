@@ -1,49 +1,14 @@
 #! /usr/bin/env NODE_PATH=./lib node
 
 const _ = require("underscore");
+const cli_option = require("commander");
+const this_package = require("./package.json");
+
 const Balance = require("./lib/balance");
 
-const MAX_VALUE = 20;
-const PUZZLE = [
-    "Bar1:3,2/2,5|1,16",
-    "Bar2:1,Bar1|1,9/2,7",
-    "Bar3:1,Bar2|1,x/2,x",
-    "Bar4:3,x/2,x|3,x",
-    "Bar5:2,x|1,x",
-    "Bar6:3,x/2,x/1,Bar5|1,x",
-    "Bar7:2,x/1,x|1,Bar6",
-    "Bar8:2,x/1,x|1,Bar7",
-    "Bar9:3,Bar8/1,x|2,Bar3/4,Bar4"
-    ];
-/*
-const MAX_VALUE = 9;
-const PUZZLE = [
-    "Bar1:3,x/1,x|1,x",
-    "Bar2:1,Bar1|2,x",
-    "Bar3:4,x/1,x|2,x",
-    "Bar4:2,Bar3|2,Bar2",
-    "Bar5:2,x|3,x",
-    "Bar6:2,Bar4|4,Bar5"
-];
-*/
-
-let balance = new Balance(MAX_VALUE);
-try {
-    let start = Date.now();
-    balance.parse(PUZZLE.join("\n"));
-
-    /*
-    console.log("---- Inspection of Bars ----");
-    _.each(balance.bars, (descent) => {
-        console.log(`${descent}`);
-    });
-    console.log("");
-    */
-
-    let result = balance.solve();
-    let spend_time = Date.now() - start;
-    if (balance.solve()) {
-        console.log(`SOLVED!! Time: ${spend_time / 1000} sec\n`);
+display_result = (balance, result, time) => {
+    if (result) {
+        console.log(`SOLVED!! Time: ${time / 1000} sec\n`);
 
         // Barの値を表示
         _.each(balance.bars, (bar) => {
@@ -58,19 +23,67 @@ try {
             console.log(buffer);
         });
     } else {
-        console.log(`UNABLE TO SOLVE Time: ${spend_time / 1000} sec\n`);
-
-        // Barの詳細表示
-        console.log("---- Results of Bars ----");
-        _.each(balance.bars, (bar) => {
-            console.log(`${bar}`);
-        });
+        console.log(`UNABLE TO SOLVE Time: ${time / 1000} sec\n`);
     }
-} catch (error) {
-    console.log("catch error");
-    if (error.hasOwnProperty('stack')) {
-        console.log(`${error.stack}`);
-    } else {
+};
+
+cli_option.version(this_package.version)
+    .usage("max_value [puzzle]")
+    .on('--help', () => {
+        console.log( "Puzzle example:\n  Bar1:2,x|3,x\n  Bar2:1,Bar1|3,x\n");
+    });
+cli_option.parse(process.argv);
+
+max_value = cli_option.args.shift();
+puzzle = cli_option.args.shift();
+
+if (max_value === undefined) {
+    console.log("Please specify max_value");
+    process.exit();
+} else if (!max_value.match(/^\d$/)) {
+    console.log(`not number max_value=${max_value}`);
+    process.exit();
+}
+max_value = parseInt(max_value, 10);
+if (max_value === 0) {
+    console.log("specified max_value is zero.")
+    process.exit();
+}
+
+let balance = new Balance(max_value);
+if (puzzle != null) {
+    // コマンドライン上で、指定がされていたケース
+    try {
+        let start = Date.now();
+        balance.parse(PUZZLE.join("\n"));
+
+        let result = balance.solve();
+        let spend_time = Date.now() - start;
+        display_result(balance, result, spend_time);
+    } catch (error) {
         console.log(`${error}`);
     }
+    process.exit();
+}
+
+try {
+    // 標準入力から
+    console.log("Please input puzzle. EOF will start solve.");
+    process.stdin.setEncoding('utf8');
+    process.stdin.on('data', (user_input) => {
+        user_input = user_input.replace(/\r?\n$/, "");
+        if (user_input !== "") {
+            balance.parse(user_input);
+        }
+    });
+    process.stdin.on('end', () => {
+        let start = Date.now();
+        let result = balance.solve();
+        let time = Date.now() - start;
+        display_result(balance, result, time);
+        process.exit();
+    });
+} catch (error) {
+    console.log(`${error}`);
+    process.exit();
 }
